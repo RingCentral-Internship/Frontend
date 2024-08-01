@@ -1,0 +1,39 @@
+{
+    "name": "SFDC AI Summarizer",
+    "version": "1.0",
+    "description": "Generates summaries for SFDC leads using AI.",
+    "host_permissions": ["https://*.salesforce.com/*"],
+    "permissions": [
+      "activeTab",
+      "storage",
+      "tabs",
+      "windows"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "content_scripts": [
+      {
+        "matches": ["https://*.salesforce.com/*"],
+        "js": ["content.js"],
+        "css": ["style.css"],
+        "run_at": "document_idle"
+      }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": ["panel.html", "panel.js", "style.css"],
+            "matches": ["<all_urls>"]
+        }
+    ],
+    "action": {
+      "default_icon": {
+        "16": "images/icon16.png",
+        "48": "images/icon48.png",
+        "128": "images/icon128.png"
+      },
+      "default_title": "SFDC AI Summarizer"
+    },
+    "manifest_version": 3
+  }
+  
