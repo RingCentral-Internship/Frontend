@@ -2,10 +2,13 @@ console.log('Content script loaded');
 
 function injectSummarizerButton() {
     // inspect web page URL
-    const isLeadProfilePage = /\/00Q\d+/.test(document.location.href) || 
-    /\/lightning\/r\/Lead\/00Q\d+/.test(document.location.href);
+    // definetly not a lead profile page if URL contains '?'
+    // for classic: URL needs to contain /00Q (ID length: 15)
+    // for lightning: URL needs to contain /lightning/r/Lead/00Q (ID length: 18)
+    const isLeadProfilePage = /\/00Q[A-Za-z0-9]{12}(\/|$)/.test(document.location.href) || 
+    /\/lightning\/r\/Lead\/00Q[A-Za-z0-9]{15}(\/|$)/.test(document.location.href);
 
-    if (isLeadProfilePage) { // ensure that current page open is a lead profile page
+    if (isLeadProfilePage && !document.location.href.includes('?')) { // ensure that current page open is a lead profile page
         console.log('On a lead profile page');
         
         if (!document.getElementById('summarizeButton')) { // check if button exists
