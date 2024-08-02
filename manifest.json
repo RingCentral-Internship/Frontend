@@ -2,7 +2,7 @@
     "name": "SFDC AI Summarizer",
     "version": "1.0",
     "description": "Generates summaries for SFDC leads using AI.",
-    "host_permissions": ["https://*.salesforce.com/*"],
+    "host_permissions": ["https://*.salesforce.com/*", "https://*.lightning.force.com/*"],
     "permissions": [
       "activeTab",
       "storage",
@@ -14,7 +14,7 @@
     },
     "content_scripts": [
       {
-        "matches": ["https://*.salesforce.com/*"],
+        "matches": ["https://*.salesforce.com/*", "https://*.lightning.force.com/*"],
         "js": ["content.js"],
         "css": ["style.css"],
         "run_at": "document_idle"
