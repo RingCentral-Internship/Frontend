@@ -15,8 +15,8 @@ function injectSummarizerButton() {
 
             // CSS style for button
             button.style.position = 'fixed'; 
-            button.style.top = '10px';
-            button.style.right = '10px';
+            button.style.bottom = '20px';
+            button.style.right = '20px';
             button.style.zIndex = 1000;
             button.style.padding = '10px 20px';
             button.style.color = '#002855';
