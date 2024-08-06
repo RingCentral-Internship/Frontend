@@ -67,11 +67,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                   } else {
                     // success
                     console.log("New window created:", newWindow);
-                    // Pass the lead data to render in side window panel
-                    chrome.runtime.sendMessage(newWindow.id, {
-                      type: "displayLeadData",
-                      data: leadData,
-                    });
+                    // send lead data to side window panel
+                    let newWindowID = newWindow.id; // new window id
+                    chrome.tabs.query(
+                      { windowID: newWindowID },
+                      function (tabs) {
+                        // get current side window panel
+                        if (tabs.length > 0) {
+                          let newTabID = tabs[0].id;
+                          chrome.tabs.sendMessage(newTabID, {
+                            type: "displayLeadData",
+                            data: leadData,
+                          });
+                        }
+                      }
+                    );
                   }
                 }
               );
