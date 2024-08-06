@@ -1,7 +1,9 @@
 // display AI generated lead summary
 document.addEventListener("DOMContentLoaded", function () {
-  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    // listen for lead data display message
+  console.log("Panel.js is loaded and listening for messages");
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    console.log("Message recieved in panel.js:", request);
+        // listen for lead data display message
     if (request.type === "displayLeadData") {
       // lead data is ready
       const leadData = request.data;

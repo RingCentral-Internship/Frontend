@@ -70,15 +70,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                     // send lead data to side window panel
                     let newWindowID = newWindow.id; // new window id
                     chrome.tabs.query(
-                      { windowID: newWindowID },
+                      { windowId: newWindowID },
                       function (tabs) {
                         // get current side window panel
                         if (tabs.length > 0) {
                           let newTabID = tabs[0].id;
-                          chrome.tabs.sendMessage(newTabID, {
-                            type: "displayLeadData",
-                            data: leadData,
-                          });
+                          setTimeout(() => {  // delay sending message to make sure panel.js script is loaded
+                            chrome.tabs.sendMessage(newTabID, {  // send POST request response
+                              type: "displayLeadData",
+                              data: leadData,
+                            });
+                          }, 500); // adjust the delay as needed
                         }
                       }
                     );
