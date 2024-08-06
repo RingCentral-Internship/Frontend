@@ -36,43 +36,51 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           // success
           console.log("Window resized: ", updatedWindow);
 
-          // Create side window panel to take up 30% of the screen
-          chrome.windows.create(
-            {
-              url: chrome.runtime.getURL("panel.html"),
-              type: "popup",
-              width: sidePanelWidth,
-              height: screenHeight,
-              left: sidePanelLeft,
-              top: newTop,
+          // Fetch lead data using the leadId from the Python server
+          fetch(`http://localhost:5000/query_lead`, {
+            // creating POST request for Python API endpoint
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
             },
-            function (newWindow) {
-              if (chrome.runtime.lastError) {
-                // failure
-                console.error(
-                  "Error creating window:",
-                  chrome.runtime.lastError
-                );
-              } else {
-                // success
-                console.log("New window created:", newWindow);
-
-                chrome.runtime.sendMessage(newWindow.id, {
-                  type: "displayLeadData",
-                  data: leadData,
-                });
-              }
-            }
-          );
+            body: JSON.stringify({ lead_id: leadID }), // pass in Lead ID
+          })
+            .then((response) => response.json()) // waitiing for response (query result)
+            .then((leadData) => {
+              chrome.windows.create(
+                // create new side window panel
+                {
+                  url: chrome.runtime.getURL("panel.html"),
+                  type: "popup",
+                  width: sidePanelWidth,
+                  height: screenHeight,
+                  left: sidePanelLeft,
+                  top: newTop,
+                },
+                function (newWindow) {
+                  if (chrome.runtime.lastError) {
+                    // failure
+                    console.error(
+                      "Error creating window:",
+                      chrome.runtime.lastError
+                    );
+                  } else {
+                    // success
+                    console.log("New window created:", newWindow);
+                    // Pass the lead data to render in side window panel
+                    chrome.runtime.sendMessage(newWindow.id, {
+                      type: "displayLeadData",
+                      data: leadData,
+                    });
+                  }
+                }
+              );
+            })
+            .catch((error) =>
+              console.error("Error querying lead data:", error)
+            );
         }
       }
     );
   }
 });
-
-function fetchLeadData(leadID, callback) {
-  const leadData = {
-    id: leadID,
-  };
-  callback(leadData);
-}
