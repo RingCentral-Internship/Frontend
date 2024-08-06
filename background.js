@@ -1,10 +1,11 @@
 // Handle button click message by creating a new window
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === "openWindow") {
-
-    // screen dimensions 
+    // screen dimensions
     let screenWidth = request.screenWidth;
     let screenHeight = request.screenHeight;
+
+    let leadID = request.leadID; // lead ID
 
     // Calculate dimensions for current web page and side window panel
     let mainWidth = Math.floor(screenWidth * 0.7);
@@ -24,10 +25,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         left: newLeft,
         top: newTop,
       },
-      function (updatedWindow) { 
-        if (chrome.runtime.lastError) { // failure 
-          console.error("Error resizing current web page: ", chrome.runtime.lastError);
-        } else {  // success
+      function (updatedWindow) {
+        if (chrome.runtime.lastError) {
+          // failure
+          console.error(
+            "Error resizing current web page: ",
+            chrome.runtime.lastError
+          );
+        } else {
+          // success
           console.log("Window resized: ", updatedWindow);
 
           // Create side window panel to take up 30% of the screen
@@ -41,10 +47,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
               top: newTop,
             },
             function (newWindow) {
-              if (chrome.runtime.lastError) {  // failure 
-                console.error("Error creating window:", chrome.runtime.lastError);
-              } else {  // success
+              if (chrome.runtime.lastError) {
+                // failure
+                console.error(
+                  "Error creating window:",
+                  chrome.runtime.lastError
+                );
+              } else {
+                // success
                 console.log("New window created:", newWindow);
+
+                chrome.runtime.sendMessage(newWindow.id, {
+                  type: "displayLeadData",
+                  data: leadData,
+                });
               }
             }
           );
@@ -53,3 +69,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     );
   }
 });
+
+function fetchLeadData(leadID, callback) {
+  const leadData = {
+    id: leadID,
+  };
+  callback(leadData);
+}
