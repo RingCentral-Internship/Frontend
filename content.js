@@ -27,7 +27,7 @@ function injectSummarizerButton() {
         if (!document.getElementById('summarizeButton')) { // check if button exists
             const button = document.createElement('button'); // create button instance
             button.id = 'summarizeButton'; // element name for button 
-            button.innerText = 'AI Summary'; // button name 
+            button.innerText = 'Generate AI Lead Summary'; // button name 
 
             // CSS style for button
             button.style.position = 'fixed'; 
@@ -41,6 +41,12 @@ function injectSummarizerButton() {
             button.style.cursor = 'pointer';
 
             document.body.appendChild(button); // render button 
+
+            // set button text based on side window panel state
+            updateButtonText(button);
+            setInterval(() => {  // poll window state so button text is dynamically updated 
+                updateButtonText(button);
+            }, 1000);
 
             button.addEventListener('click', function() {  // handle click
                 console.log('button clicked');
@@ -59,6 +65,17 @@ function injectSummarizerButton() {
             existingButton.remove();  // remove button 
         }
     }
+}
+
+function updateButtonText(button) {
+    // check state of side window panel and set button accordingly 
+    chrome.runtime.sendMessage({ type: 'checkWindowState' }, (response) => {
+        if (response && response.windowOpen) {  // side window panel is open
+            button.innerText = 'Refresh AI Lead Summary';
+        } else {  // side window panel has not been opened
+            button.innerText = 'Generate AI Lead Summary';
+        }
+    });
 }
 
 // make sure that button injection is in sync with page
