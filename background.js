@@ -3,9 +3,11 @@ let createdWindowId = null;  // globally define side window panel to manage and 
 // Handle button click message by creating a new window
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.type === "openWindow") {
-      // screen dimensions
-      let screenWidth = request.screenWidth;
-      let screenHeight = request.screenHeight;
+      // screen dimensions and position: full area to work with
+      let screenWidth = Math.floor(request.screenWidth);
+      let screenHeight = Math.floor(request.screenHeight);
+      let screenLeft = Math.floor(request.screenLeft);  // (x)
+      let screenTop = Math.floor(request.screenTop);   // (y)
   
       let leadID = request.leadID; // lead ID
   
@@ -14,65 +16,26 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       let sidePanelWidth = Math.floor(screenWidth * 0.3);
   
       // Positioning
-      let newLeft = 0; // Position of the main window on the left
-      let newTop = 0; // Position of both windows (same top position)
-      let sidePanelLeft = mainWidth; // Position of the side panel window on the right
+      let sidePanelLeft = Math.floor(screenLeft + mainWidth); // (x) Position of the side window panel 
   
-      // Resize current web page to take up 70% of the screen
-      chrome.windows.update(
-        sender.tab.windowId,
-        {
-          width: mainWidth,
-          height: screenHeight,
-          left: newLeft,
-          top: newTop,
-        },
-        function (updatedWindow) {
-          if (chrome.runtime.lastError) {
-            // failure
-            console.error(
-              "Error resizing current web page: ",
-              chrome.runtime.lastError
-            );
-          } else {
-            // success
-            console.log("Window resized: ", updatedWindow);
-  
-            // Fetch lead data using the leadId from the Python server
-            fetch(`http://localhost:5000/query_lead`, {
-              // creating POST request for Python API endpoint
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ lead_id: leadID }), // pass in Lead ID
-            })
-              .then((response) => response.json()) // waitiing for response (query result)
-              .then((leadData) => {
-                // check if window has already been opened
-                if (createdWindowId) { // not null
-                    chrome.windows.get(createdWindowId, (win) => {
-                        if (chrome.runtime.lastError || !win) {  // DNE or window has been closed-- create new window
-                            createNewWindow(leadData, sidePanelWidth, screenHeight, sidePanelLeft, newTop);
-                        } else {  // window is open
-                            if (win.state === 'minimized') {  // minimized screen view-- trigger re-expanision
-                                chrome.windows.update(createdWindowId, { state: 'normal' }, () => {  // set state back
-                                    updateWindowWithLeadData(leadData);
-                                });
-                            }
-                            updateWindowWithLeadData(leadData);
-                        }
+      // Check if side window panel is already open 
+      if (createdWindowId) {  // not null
+        chrome.windows.get(createdWindowId, (win) => {
+            if (chrome.runtime.lastError || !win) {  // DNE or window has been closed-- create new one
+                resizeAndCreateWindow(sender.tab.windowId, screenLeft, screenTop, mainWidth, screenHeight, sidePanelWidth, sidePanelLeft, leadID);
+            } else {  // window is open
+                if (win.state === 'minimized') {  // mnimized screen view-- re expand and render lead data
+                    chrome.windows.update(createdWindowId, { state: 'normal'}, () => {  // re expand
+                        updateWindowWithLeadData(leadID);
                     });
-                } else {  // no window has been created
-                    createNewWindow(leadData, sidePanelWidth, screenHeight, sidePanelLeft, newTop);
+                } else {  // render lead data
+                    updateWindowWithLeadData(leadID);
                 }
-            })
-              .catch((error) =>
-                console.error("Error querying lead data:", error)
-              );
-          }
-        }
-      );
+            }
+        });
+      } else {  // null-- create window
+        resizeAndCreateWindow(sender.tab.windowId, screenLeft, screenTop, mainWidth, screenHeight, sidePanelWidth, sidePanelLeft, leadID);
+      }
     } else if (request.type === "checkWindowState") {  // check if window is open and send back state to content.js
         if (createdWindowId) {  // not null
             chrome.windows.get(createdWindowId, (win) => {
@@ -89,7 +52,52 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
   });
 
-  function createNewWindow(leadData, sidePanelWidth, screenHeight, sidePanelLeft, newTop) {  // create new side window panel
+  function resizeAndCreateWindow(windowId, screenLeft, screenTop, mainWidth, screenHeight, sidePanelWidth, sidePanelLeft, leadID) {  // resize window and create side window panel 
+    // Resize current web page to take up 70% of the screen
+    chrome.windows.update(
+        windowId,
+        {
+            width: mainWidth,
+            height: screenHeight,
+            left: screenLeft,
+            top: screenTop,
+        },
+        function (updatedWindow) {
+            if (chrome.runtime.lastError) {
+                // failure
+                console.error(
+                "Error resizing current web page: ",
+                chrome.runtime.lastError
+                );
+            } else {
+                // success
+                console.log("Window resized: ", updatedWindow);
+                fetchLeadDataAndCreateWindow(leadID, sidePanelWidth, screenHeight, sidePanelLeft, screenTop);  // create side panel and render lead data
+            }
+        }
+      );
+  }
+
+  function fetchLeadDataAndCreateWindow(leadID, sidePanelWidth, screenHeight, sidePanelLeft, screenTop) {  // create new side window panel
+    // Fetch lead data using the leadId from the Python server
+    fetch(`http://localhost:5000/query_lead`, {
+        // creating POST request for Python API endpoint
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ lead_id: leadID }), // pass in Lead ID
+    })
+    .then((response) => response.json()) // waitiing for response (query result)
+    .then((leadData) => {
+        createNewWindow(leadData, sidePanelWidth, screenHeight, sidePanelLeft, screenTop);  // create side window panel
+    })
+    .catch((error) =>
+        console.error("Error querying lead data:", error)
+    );
+}
+
+function createNewWindow(leadData, sidePanelWidth, screenHeight, sidePanelLeft, screenTop) {  // create side window panel
     chrome.windows.create(
         // parameters 
         {
@@ -98,7 +106,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             width: sidePanelWidth, 
             height: screenHeight,
             left: sidePanelLeft,
-            top: newTop
+            top: screenTop
         },
         function (newWindow) {  
             if (chrome.runtime.lastError) {
@@ -112,21 +120,36 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             }
         }
     );
-  }
+}
 
 
-function updateWindowWithLeadData(leadData) {  // get queried lead data and send to render
-    chrome.tabs.query({ windowId: createdWindowId }, function (tabs) {
-        if (tabs.length > 0) {
-            let newTabID = tabs[0].id;
-            setTimeout(() => {  // delay sending message to make sure panel.js script is loaded
-                chrome.tabs.sendMessage(newTabID, {  // send POST request response 
-                    type: "displayLeadData",
-                    data: leadData
-                });
-            }, 500);  
-        }
-    });
+function updateWindowWithLeadData(leadID) {  // get queried lead data and send to render
+    // Fetch lead data using the leadId from the Python server
+    fetch(`http://localhost:5000/query_lead`, {
+        // creating POST request for Python API endpoint
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ lead_id: leadID }), // pass in Lead ID
+    })
+    .then((response) => response.json()) // waitiing for response (query result)
+    .then((leadData) => {
+        chrome.tabs.query({ windowId: createdWindowId }, function (tabs) {
+            if (tabs.length > 0) {
+                let newTabID = tabs[0].id;
+                setTimeout(() => {  // delay sending message to make sure panel.js script is loaded
+                    chrome.tabs.sendMessage(newTabID, {  // send POST request response 
+                        type: "displayLeadData",
+                        data: leadData
+                    });
+                }, 500);  
+            }
+        });
+    })
+    .catch((error) =>  // failure
+        console.error("Error querying lead data: ",error)
+    );
 }
 
 
