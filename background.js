@@ -72,33 +72,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             } else {
                 // success
                 console.log("Window resized: ", updatedWindow);
-                fetchLeadDataAndCreateWindow(leadID, sidePanelWidth, screenHeight, sidePanelLeft, screenTop);  // create side panel and render lead data
+                createNewWindow(sidePanelWidth, screenHeight, sidePanelLeft, screenTop, leadID); // create side window panel and render lead data
             }
         }
       );
   }
 
-  function fetchLeadDataAndCreateWindow(leadID, sidePanelWidth, screenHeight, sidePanelLeft, screenTop) {  // create new side window panel
-    // Fetch lead data using the leadId from the Python server
-    fetch(`http://localhost:5000/query_lead`, {
-        // creating POST request for Python API endpoint
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ lead_id: leadID }), // pass in Lead ID
-    })
-    .then((response) => response.json()) // waitiing for response (query result)
-    .then((leadData) => {
-        console.log(leadData);
-        createNewWindow(leadData, sidePanelWidth, screenHeight, sidePanelLeft, screenTop);  // create side window panel
-    })
-    .catch((error) =>
-        console.error("Error querying lead data:", error)
-    );
-}
-
-function createNewWindow(leadData, sidePanelWidth, screenHeight, sidePanelLeft, screenTop) {  // create side window panel
+function createNewWindow(sidePanelWidth, screenHeight, sidePanelLeft, screenTop, leadID) {  // create side window panel
     chrome.windows.create(
         // parameters 
         {
@@ -117,7 +97,7 @@ function createNewWindow(leadData, sidePanelWidth, screenHeight, sidePanelLeft, 
                 // success
                 console.log("New window created:", newWindow);
                 createdWindowId = newWindow.id; // define new window ID
-                waitForContentScriptToLoad(newWindow.id, leadData);  // wait for script load
+                waitForContentScriptToLoad(newWindow.id, leadID);  // wait for script load
             }
         }
     );
@@ -155,7 +135,7 @@ function updateWindowWithLeadData(leadID) {  // get queried lead data and send t
 }
 
 
-function waitForContentScriptToLoad(windowId, leadData) {  // get queried lead data and send to render
+function waitForContentScriptToLoad(windowId, leadID) {  // get queried lead data and send to render
     chrome.tabs.query({ windowId: windowId }, function (tabs) {
         if (tabs.length > 0) {
             let newTabID = tabs[0].id;
@@ -164,9 +144,9 @@ function waitForContentScriptToLoad(windowId, leadData) {  // get queried lead d
                     if (response && response.status === "ready") {
                         clearInterval(checkContentScriptLoaded);
                         chrome.tabs.sendMessage(newTabID, {  // send POST request response 
-                            type: "displayLeadData",
-                            data: leadData
+                            type: "displayLoading",
                         });
+                        updateWindowWithLeadData(leadID); // fetch and render lead data
                     }
                 });
             }, 100);

@@ -7,8 +7,12 @@
 <body>
     <div id="summaryContainer">
         <h1><img src="images/icon128.png" alt="Lead Summarizer Icon"> Lead Summary</h1>
-        
-        <div class="accordion">
+
+        <div id="loading" class="loading">
+            <img src="images/loading.gif" alt="Loading Icon">
+        </div>
+
+        <div id="accordionContainer" class="accordion" style="display: none;">
             <button type="button" class="accordion-toggle" id="leadInfo">General Info</button>
             <div class="accordion-content">
                 <p>Name: <span id="Name"></span></p>
@@ -16,29 +20,27 @@
                 <p>Email: <span id="Email"></span></p>
                 <p>Phone: <span id="Phone"></span></p>
                 <p>Status: <span id="Status"></span></p>
+                <p>Title: <span id="Title"></span></p>
             </div>
             <br>
-            <button type="button" class="accordion-toggle" id="productInterest">Product Interest</button>
+            <button type="button" class="accordion-toggle" id="product_Interest">Product Interest</button>
             <div class="accordion-content">
-                <p>Product Interest: <span id="ProductInterest"></span></p>
+                <p>Product Interest: <span id="Product_Interest"></span></p>
             </div>
             <br>
-            <button type="button" class="accordion-toggle" id="leadSource">Lead Source</button>
+            <button type="button" class="accordion-toggle" id="whereWhy">Where and Why</button>
             <div class="accordion-content">
-                <p>Lead Source: <span id="LeadSource"></span></p>
-                <p>Lead Source Description: <span id="LeadSourceDescription"></span></p>
-                <p>Lead Engagement Score: <span id="LeadEngagementScore"></span></p>
-                <p>Campaign History: <span id="CampaignHistory"></span></p>
+                <p>Where and why the lead came through the door: <span id="Where_and_Why"></span></p>
             </div>
             <br>
-            <button type="button" class="accordion-toggle" id="leadHistory">Lead History</button>
+            <button type="button" class="accordion-toggle" id="historicalRelationship">Historical Relationship</button>
             <div class="accordion-content">
-                <p>Lead History: <span id="LeadHistory"></span></p>
+                <p>Lead History: <span id="Historical_Relationship"></span></p>
             </div>
             <br>
-            <button type="button" class="accordion-toggle" id="salesHook">Sales Hook</button>
+            <button type="button" class="accordion-toggle" id="salesHook">Sales Enablement Hook</button>
             <div class="accordion-content">
-                <p>Sales Hook: <span id="SalesHook"></span></p>
+                <p>Sales Hook: <span id="Sales_Enablement_Hook"></span></p>
             </div>
         </div>
     </div>
