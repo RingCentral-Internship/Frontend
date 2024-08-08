@@ -1,14 +1,43 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>SFDC Lead Summary</title>
-        <link rel="stylesheet" type="text/css" href="style.css">
-    </head>
-    <body>
-        <div id="summaryContainer">
-            <h1>Lead Summary</h1>
-            <p id="summaryContent">Generating AI lead summary...</p>
+<head>
+    <title>SFDC Lead Summary</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div id="summaryContainer">
+        <h1>Lead Summary</h1>
+        
+        <div class="accordion">
+            <button type="button" class="accordion-toggle" id="leadInfo">General Info</button>
+            <div class="accordion-content">
+                <p>Name: <span id="Name"></span></p>
+                <p>Company: <span id="Company"></span></p>
+                <p>Email: <span id="Email"></span></p>
+                <p>Phone: <span id="Phone"></span></p>
+                <p>Status: <span id="Status"></span></p>
+            </div>
+            <button type="button" class="accordion-toggle" id="productInterest">Product Interest</button>
+            <div class="accordion-content">
+                <p>Product Interest: <span id="ProductInterest"></span></p>
+            </div>
+            <button type="button" class="accordion-toggle" id="leadSource">Lead Source</button>
+            <div class="accordion-content">
+                <p>Lead Source: <span id="LeadSource"></span></p>
+                <p>Lead Source Description: <span id="LeadSourceDescription"></span></p>
+                <p>Lead Engagement Score: <span id="LeadEngagementScore"></span></p>
+                <p>Campaign History: <span id="CampaignHistory"></span></p>
+            </div>
+            <button type="button" class="accordion-toggle" id="leadHistory">Lead History</button>
+            <div class="accordion-content">
+                <p>Lead History: <span id="LeadHistory"></span></p>
+            </div>
+            <button type="button" class="accordion-toggle" id="salesHook">Sales Hook</button>
+            <div class="accordion-content">
+                <p>Sales Hook: <span id="SalesHook"></span></p>
+            </div>
         </div>
-        <script src="panel.js"></script>
-    </body>
+    </div>
+    <script src="panel.js"></script>
+</body>
 </html>

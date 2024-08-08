@@ -90,6 +90,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     })
     .then((response) => response.json()) // waitiing for response (query result)
     .then((leadData) => {
+        console.log(leadData);
         createNewWindow(leadData, sidePanelWidth, screenHeight, sidePanelLeft, screenTop);  // create side window panel
     })
     .catch((error) =>
@@ -135,6 +136,7 @@ function updateWindowWithLeadData(leadID) {  // get queried lead data and send t
     })
     .then((response) => response.json()) // waitiing for response (query result)
     .then((leadData) => {
+        console.log(leadData);
         chrome.tabs.query({ windowId: createdWindowId }, function (tabs) {
             if (tabs.length > 0) {
                 let newTabID = tabs[0].id;
