@@ -6,7 +6,7 @@
 </head>
 <body>
     <div id="summaryContainer">
-        <h1>Lead Summary</h1>
+        <h1><img src="images/icon128.png" alt="Lead Summarizer Icon"> Lead Summary</h1>
         
         <div class="accordion">
             <button type="button" class="accordion-toggle" id="leadInfo">General Info</button>
@@ -17,10 +17,12 @@
                 <p>Phone: <span id="Phone"></span></p>
                 <p>Status: <span id="Status"></span></p>
             </div>
+            <br>
             <button type="button" class="accordion-toggle" id="productInterest">Product Interest</button>
             <div class="accordion-content">
                 <p>Product Interest: <span id="ProductInterest"></span></p>
             </div>
+            <br>
             <button type="button" class="accordion-toggle" id="leadSource">Lead Source</button>
             <div class="accordion-content">
                 <p>Lead Source: <span id="LeadSource"></span></p>
@@ -28,15 +30,20 @@
                 <p>Lead Engagement Score: <span id="LeadEngagementScore"></span></p>
                 <p>Campaign History: <span id="CampaignHistory"></span></p>
             </div>
+            <br>
             <button type="button" class="accordion-toggle" id="leadHistory">Lead History</button>
             <div class="accordion-content">
                 <p>Lead History: <span id="LeadHistory"></span></p>
             </div>
+            <br>
             <button type="button" class="accordion-toggle" id="salesHook">Sales Hook</button>
             <div class="accordion-content">
                 <p>Sales Hook: <span id="SalesHook"></span></p>
             </div>
         </div>
+    </div>
+    <div id="logoContainer">
+        <img src="images/ringcentral-logo.png" alt="RingCentral Logo" width="150"> <!-- Adjust width as necessary -->
     </div>
     <script src="panel.js"></script>
 </body>

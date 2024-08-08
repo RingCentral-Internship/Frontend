@@ -1,44 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+body {
+    background-color: #F1EFEC; /* linen */
+    color: #2B2926; /* warm black */
+    font-family: 'Montserrat', sans-serif;
+    position: relative; /* to ensure body is the reference for positioning */
+    min-height: 100vh; /* to ensure full height of the viewport */
+    margin: 0; /* remove default body margin */
+    padding-bottom: 60px; /* add padding at the bottom to avoid content overlap with logo */
+}
+
 #summaryContainer {
     padding: 20px;
-    font-family: Arial, sans-serif;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px; /* limit the width of the summary container */
+    margin: auto; /* center the container */
 }
 
-#summaryContent {
-    font-size: 16px;
+#summaryContainer h1 {
+    color: #002855; /* ocean */
+    font-size: 28px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
 }
 
+#summaryContainer h1 img {
+    margin-right: 10px;
+    width: 50px; 
+    height: 50px; 
+    border-radius: 8px; /* rounded corners */
+}
 
 .accordion-toggle {
-    background-color: #eee;
-    color: #444;
+    background-color: #0684BC; /* cerulean */
+    color: white;
     cursor: pointer;
     padding: 18px;
     width: 100%;
     border: none;
     text-align: left;
     outline: none;
-    font-size: 15px;
+    font-size: 18px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.accordion-toggle:nth-child(2n) {
+    background-color: #FF7A00; /* light orange */
 }
 
 .accordion-toggle:hover {
-    background-color: #ccc;
+    opacity: 0.9;
 }
 
 .accordion-content {
-    padding: 0 18px;
+    padding: 18px;
     display: none;
     overflow: hidden;
-    background-color: #f1f1f1;
+    background-color: #C8C2B4; /* ash */
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-weight: 600; /* Make the text more bold */
+    font-size: 16px; /* Increase font size for better readability */
 }
 
 .accordion-toggle:after {
     content: '\02795'; /* Unicode character for "plus" sign (+) */
     font-size: 13px;
-    color: black;
-    float: right;
-    margin-left: 5px;
+    color: white;
+    position: absolute;
+    right: 20px;
+    top: 18px;
 }
 
 .accordion-toggle.active:after {
     content: "\2796"; /* Unicode character for "minus" sign (-) */
+    color: white;
+}
+
+#logoContainer {
+    position: fixed; /* fixed positioning for the logo */
+    bottom: 10px; /* distance from the bottom of the viewport */
+    right: 10px; /* distance from the right of the viewport */
 }
