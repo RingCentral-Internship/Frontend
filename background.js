@@ -8,7 +8,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       let screenHeight = Math.floor(request.screenHeight);
       let screenLeft = Math.floor(request.screenLeft);  // (x)
       let screenTop = Math.floor(request.screenTop);   // (y)
-  
+
       let leadID = request.leadID; // lead ID
   
       // Calculate dimensions for current web page and side window panel
@@ -20,6 +20,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   
       // Check if side window panel is already open 
       if (createdWindowId) {  // not null
+        chrome.tabs.query({ windowId: createdWindowId }, function (tabs) {
+            if (tabs.length > 0) {
+                let newTabID = tabs[0].id;
+                chrome.tabs.sendMessage(newTabID, { type: "displayLoading" });
+            }
+        });
         chrome.windows.get(createdWindowId, (win) => {
             if (chrome.runtime.lastError || !win) {  // DNE or window has been closed-- create new one
                 resizeAndCreateWindow(sender.tab.windowId, screenLeft, screenTop, mainWidth, screenHeight, sidePanelWidth, sidePanelLeft, leadID);
