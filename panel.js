@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 sections[section].forEach(field => {
                     const element = document.getElementById(field.replace(/ /g, '_'));
                     if (element) {
-                        element.textContent = leadData[field] || "N/A";
+                        element.innerHTML = formatText(leadData[field] || "N/A");
                     }
                 });
             }
@@ -52,3 +52,14 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
+
+/* format json response for html */
+
+function formatText(text) {
+  // Convert line breaks to <br>
+  text = text.replace(/\n/g, "<br>");
+  // Convert plain text bullet points to HTML unordered list
+  text = text.replace(/-\s/g, "<li>"); // Assuming bullets are indicated with "- "
+  text = "<ul>" + text.replace(/<\/li><br>/g, "</li>") + "</ul>"; // Convert and wrap in <ul>
+  return text;
+}
