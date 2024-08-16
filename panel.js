@@ -56,6 +56,8 @@ document.addEventListener("DOMContentLoaded", function() {
 /* format json response for html */
 
 function formatText(text) {
+  // Convert **text** to <strong>text</strong>
+  text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
   // Convert line breaks to <br>
   text = text.replace(/\n/g, "<br>");
   // Convert plain text bullet points to HTML unordered list

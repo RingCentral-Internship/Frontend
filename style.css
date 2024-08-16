@@ -2,7 +2,7 @@
 
 body {
     background-color: #F1EFEC; /* linen */
-    color: #2B2926; /* warm black */
+    color: #002855; /* Ocean */
     font-family: 'Montserrat', sans-serif;
     position: relative; /* to ensure body is the reference for positioning */
     min-height: 100vh; /* to ensure full height of the viewport */
@@ -76,7 +76,7 @@ body {
     background-color: #C8C2B4; /* ash */
     border-radius: 4px;
     margin-bottom: 10px;
-    font-weight: 600; /* Make the text more bold */
+    font-weight: 300; /* Make the text more un-bold */
     font-size: 16px; /* Increase font size for better readability */
 }
 
@@ -98,4 +98,10 @@ body {
     position: fixed; /* fixed positioning for the logo */
     bottom: 10px; /* distance from the bottom of the viewport */
     right: 10px; /* distance from the right of the viewport */
+}
+
+.label {
+    color: #2B2926; /* warm black */
+    font-weight: bold; /* Make text bolded */
+    font-size: 16px; /* Increased font size for better readability */
 }
