@@ -3,6 +3,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const loadingElement = document.getElementById("loading");
     const accordionContainer = document.getElementById("accordionContainer");
+    const chatLog = document.getElementById("chatLog");
+    const chatInpput = document.getElementById("chatInput");
+    const sendButton = document.getElementById("sendButton");
 
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (request.type === "ping") {  // side panel window is ready
@@ -12,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function() {
             accordionContainer.style.display = "none"; // don't show until query is complete 
         } else if (request.type === "displayLeadData") {  // render data from query 
             console.log("Message received in panel.js:", request);
+            const isLightning = request.isLightningExperience;  // store interface
             const leadData = request.data;  // data in message
             console.log("Lead Data: ", leadData);
 
@@ -24,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 productInterest: ["Product Interest"],
                 whereWhy: ["Where and Why"],
                 historicalRelationship: ["Historical Relationship"],
+                duplicateLeads: ["Duplicate Leads"],
                 salesHook: ["Sales Enablement Hook"]
             };
 
@@ -31,7 +36,32 @@ document.addEventListener("DOMContentLoaded", function() {
                 sections[section].forEach(field => {
                     const element = document.getElementById(field.replace(/ /g, '_'));
                     if (element) {
-                        element.innerHTML = formatText(leadData[field] || "N/A");
+                        const formattedText = formatText(
+                          leadData[field] || "N/A",
+                          field, 
+                          isLightning
+                        );
+
+                        if (field === "Duplicate Leads") {  
+                          if (leadData[field] && leadData[field].length > 0) {
+                            // duplicates exist
+                            element.innerHTML = formattedText; // Render links
+                            const duplicateToggle =
+                              document.getElementById("duplicateLeads");
+                            if (duplicateToggle) {
+                              duplicateToggle.style.display = "block"; // Show the toggle
+                            }
+                          } else {
+                            // no duplicates exist
+                            const duplicateToggle =
+                              document.getElementById("duplicateLeads");
+                            if (duplicateToggle) {
+                              duplicateToggle.style.display = "none"; // Hide the toggle
+                            }
+                          }
+                        } else {
+                          element.innerHTML = formattedText; // render AI generated summaries
+                        }
                     }
                 });
             }
@@ -51,17 +81,33 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
+
 });
 
 /* format json response for html */
+function formatText(text, fieldName, isLightning) {
+  if (fieldName === "Duplicate Leads") {
+    // formatting into SFDC links for lead duplicates
+    if (!Array.isArray(text) || text.length === 0) return ""; // return empty if no duplicates
 
-function formatText(text) {
-  // Convert **text** to <strong>text</strong>
-  text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-  // Convert line breaks to <br>
-  text = text.replace(/\n/g, "<br>");
-  // Convert plain text bullet points to HTML unordered list
-  text = text.replace(/-\s/g, "<li>"); // Assuming bullets are indicated with "- "
-  text = "<ul>" + text.replace(/<\/li><br>/g, "</li>") + "</ul>"; // Convert and wrap in <ul>
-  return text;
+    const leadLinks = text.map((id) => {
+      // construct SFDC links for lead profiles
+      let salesforceURL = isLightning
+        ? `https://rc.lightning.force.com/lightning/r/Lead/${id}/view`
+        : `https://rc.my.salesforce.com/${id}`;
+      return `<a href="${salesforceURL}" target="_blank">${id}</a>`; // convert into clickable
+    });
+    return leadLinks.join("<br>");
+  } else {
+    // formatting AI generated summaries
+    // Convert **text** to <strong>text</strong>
+    text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+    // Convert line breaks to <br>
+    text = text.replace(/\n/g, "<br>");
+    // Convert plain text bullet points to HTML unordered list
+    text = text.replace(/-\s/g, "<li>"); // Assuming bullets are indicated with "- "
+    text = "<ul>" + text.replace(/<\/li><br>/g, "</li>") + "</ul>"; // Convert and wrap in <ul>
+    return text;
+  }
 }
+

@@ -6,11 +6,13 @@ function injectSummarizerButton() {
   // for lightning: URL needs to contain /lightning/r/Lead/00Q (ID length: 18)
   const leadIDLightning = /\/lightning\/r\/Lead\/00Q[A-Za-z0-9]{15}(\/|$)/;
 
+  isLightning = leadIDLightning.test(document.location.href);
+
   // check if current web page open is a lead profile page
   const isLeadProfilePage =
     leadIDClassic.test(document.location.href) ||
     leadIDLightning.test(document.location.href);
-
+    
   // inspect web page URL
   // definetly not a lead profile page if URL contains '?'
   if (isLeadProfilePage && !document.location.href.includes("?")) {
@@ -27,6 +29,12 @@ function injectSummarizerButton() {
       leadID = document.location.href.match(leadIDLightning)[0].split("/")[4];
     }
     console.log("lead ID: ", leadID);
+
+    chrome.runtime.sendMessage({
+      type: "leadInfo",
+      leadID: leadID,
+      isLightningExperience: isLightning
+    });
 
     if (!document.getElementById("summarizeButton")) {
       // check if button exists

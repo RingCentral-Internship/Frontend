@@ -36,6 +36,10 @@
             <button type="button" class="accordion-toggle" id="historicalRelationship">Historical Relationship</button>
             <div class="accordion-content">
                 <p><span class="label">Lead History: </span><span id="Historical_Relationship"></span></p>
+                <button type="button" class="accordion-toggle duplicate-leads-toggle" id="duplicateLeads">Duplicate Leads</button>
+                <div class="accordion-content">
+                    <p><span class="label">Duplicate Leads: </span><span id="Duplicate_Leads"></span></p>
+                </div>
             </div>
             <br>
             <button type="button" class="accordion-toggle" id="salesHook">Sales Enablement Hook</button>
@@ -44,6 +48,14 @@
             </div>
         </div>
     </div>
+    
+    <div id="chatbotContainer">
+        <h2>Ask About This Lead</h2>
+        <div id="chatLog" class="chat-log"></div>
+        <input type="text" id="chatInput" placeholder="Ask anything..." autocomplete="off">
+        <button id="sendButton">Send</button>
+    </div>
+
     <div id="logoContainer">
         <img src="images/ringcentral-logo.png" alt="RingCentral Logo" width="150"> <!-- Adjust width as necessary -->
     </div>

@@ -2,6 +2,10 @@ let createdWindowId = null; // globally define side window panel for managing/ u
 
 // Handle button click message by creating a new window
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.type === "leadInfo") {
+    // store interface information 
+    isLightningExperience = request.isLightningExperience;
+  }
   if (request.type === "openWindow") {
     // screen dimensions and position: full area to work with
     let screenWidth = Math.floor(request.screenWidth);
@@ -185,6 +189,7 @@ function updateWindowWithLeadData(leadID) {
               // send POST request response
               type: "displayLeadData",
               data: leadData,
+              isLightningExperience: isLightningExperience
             });
           }, 500);
         }

@@ -105,3 +105,54 @@ body {
     font-weight: bold; /* Make text bolded */
     font-size: 16px; /* Increased font size for better readability */
 }
+
+#chatbotContainer {
+    margin-top: 20px;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+#chatLog {
+    background-color: #fff;
+    border-radius: 4px;
+    padding: 10px;
+    height: 150px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#chatLog p {
+    margin: 0;
+    padding: 5px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+#chatInput {
+    width: calc(100% - 60px);
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+#sendButton {
+    padding: 10px 20px;
+    border: none;
+    background-color: #0684BC; /* cerulean */
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#sendButton:hover {
+    opacity: 0.9;
+}
+
+.duplicate-leads-toggle + .accordion-content {
+    background-color: white; /* white for expanded content */
+}
