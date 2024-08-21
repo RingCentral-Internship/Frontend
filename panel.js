@@ -93,7 +93,7 @@ function formatText(text, fieldName, isLightning) {
   if (
     fieldName === "Duplicate Leads" ||
     fieldName === "Duplicate Opportunities"
-  ) {
+  ) {  // create SFDC links
     if (!Array.isArray(text) || text.length === 0) return ""; // return empty if no duplicates
 
     let dupType;
@@ -111,6 +111,8 @@ function formatText(text, fieldName, isLightning) {
       return `<a href="${salesforceURL}" target="_blank">${id}</a>`; // convert into clickable
     });
     return links.join("<br>");
+  } else if (fieldName === "Phone") {  // create phone link
+    return `<p><a href="tel:${text}" class="aligned-phone">${text}</a></p>`;
   } else {
     // formatting AI generated summaries
     // Convert **text** to <strong>text</strong>
