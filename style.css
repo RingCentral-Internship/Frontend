@@ -153,6 +153,6 @@ body {
     opacity: 0.9;
 }
 
-.duplicate-leads-toggle + .accordion-content {
+.duplicate-toggle + .accordion-content {
     background-color: white; /* white for expanded content */
 }
